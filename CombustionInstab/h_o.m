@@ -1,4 +1,5 @@
 function h = h_o (Y,u,T)
+% Computes h_o = h + 0.5 u^2
 
 run 'constants.m'
 
