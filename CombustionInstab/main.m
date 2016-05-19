@@ -8,21 +8,21 @@ global lambda dx nu A Ac x xc flux T0_in mp_in
 
 %% Parameters
 
-in2m = 0.0254;
+in2m = 0.0254;       % inches to meters conversion factor 
 
-Lc = 5 * in2m;       % Chamber length (in)
-flux = 2;             % Flux type: 1-Roe / 2-LaxWendroff
-dx = 5e-3;         % Mesh spacing
+Lc = 5 * in2m;        % Chamber length (in)
+flux = 2;             % Flux type: 1-Roe (not implemented yet) / 2-LaxWendroff
+dx = 5e-3;            % Mesh spacing
 
 maxiter = 50000;      % Max number of iterations
 minRes = 1e-3;        % threshold residual value
 nu = 0.7;             % Courant number
 
-run 'constants.m'
+run 'constants.m'    
 
 %% Define geometry
 
-[x,A] = read_shape(Lc,dx);
+[x,A] = read_shape(Lc,dx);  % The only varying dimension is the length of the combustion chamber
 
 A0 = A(1);
 Nf = length(x);
@@ -31,21 +31,18 @@ Nc = Nf - 1;
 Ac = 0.5*(A(1:Nc) + A(2:Nf));
 xc = 0.5*(x(1:Nc) + x(2:Nf));
 
-Nf = length(x)
-Nc = Nf - 1;
+%% Inlet Parameters: Temperature (K) and Mass flow rate (kg/s)
 
-%% Inlet Parameters: Stagnation temperature (K) and Mass flow rate (kg/s)
-
-T0_in = 1010;     % Temperature:                  
+T0_in = 1010;     % Temperature:                    T
 mp_in = 0.459;    % Mass flow rate:                 rho * u * A 
 
-% Initial conditions
+% Initial conditions: 
 
-Y0 = 1; Y1 = 0.1;
-p0 = 2.08e6; p1 = 2.22e6;
-T0 = 1010; T1 = 2700;
-r0 = p0*MMass(Y0)/(R*T0); r1 = p1*MMass(Y1)/(R*T1);
-mp0 = 0.459; mp1 = 0.524;
+Y0  = 1;                        Y1  = 0.1;
+p0  = 2.08e6;                   p1  = 2.22e6;
+T0  = 1010;                     T1  = 2700;
+r0  = p0*MMass(Y0)/(R*T0);      r1  = p1*MMass(Y1)/(R*T1);
+mp0 = 0.459;                   mp1 = 0.524;
 
 %% Structures
 
@@ -64,7 +61,6 @@ solq_prim = [];
 
 %% Initialize q 
  
-
 q(:,1) = r0 .* (xc<0) + r1 .* (xc>=0);
 q(:,4) = r0*Y0 .* (xc<0) + r1*Y1 .* (xc>=0);
 
@@ -83,7 +79,6 @@ q(:,3) = q(:,1).*h_o(Y,u,T) - p;
 
 iter = 0;
 t = 0;
-T = [];
 Ress = [];
 res = 1;
 
@@ -120,6 +115,6 @@ while (res > minRes && iter < maxiter)
     
 end
 
-
+% Plot convergence history
 plot(1:length(Ress),Ress)
 tf = t;
