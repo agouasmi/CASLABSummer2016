@@ -1,6 +1,5 @@
 function Re = Res(q)
-
-% With Roe scheme for now
+% Computes the residual
 
 global dx A Ac flux T0_in mp_in
 
@@ -12,9 +11,9 @@ Nf = Nc + 1;
 
 Re = zeros(Nc,4);
 
-%% Inlet (Temperature and mass inflow rate)
+%% Inlet (Temperature and mass inflow rate given/ pressure is extrapolated/ Y = 1)
 
-[~,~,p,~,~] =  con_to_prim(q(1,:));
+[~,~,p,~,~,~] =  con_to_prim(q(1,:));
 M = MMass(1);
 
 T = T0_in; 
@@ -69,6 +68,8 @@ end
 
 Re(Nc,:) = Re(Nc,:) - A(Nf)/Ac(Nc)*F/dx;
 
+
+%% Source terms
 H  = source_H(q);
 Hf = source_Hf(q);
 
