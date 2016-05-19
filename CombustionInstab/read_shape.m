@@ -1,5 +1,7 @@
 function [x,A] = read_shape(Lc,dx)
 
+% Creates the mesh
+
 in2m = 0.0254;     % inches to meters factor
 
 Li = 6.82 * in2m;  % Injector Length
