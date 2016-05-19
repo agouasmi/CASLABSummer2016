@@ -1,4 +1,5 @@
 function F = lax_wendroff_flux(ql,qr)
+% Richtmyer 2-step formulation
 
 global lambda
 
